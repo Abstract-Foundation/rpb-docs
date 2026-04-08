@@ -1,0 +1,16 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #fff8f5;
+  color: #5f5f5f;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #ffdbcc;
+  color: #484646;
+}

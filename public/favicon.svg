@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Cookie body -->
+  <circle cx="24" cy="24" r="22" fill="#DC8360"/>
+  <circle cx="24" cy="24" r="20" fill="#e8976f"/>
+  <!-- Bite mark -->
+  <circle cx="42" cy="8" r="9" fill="#fff8f5"/>
+  <!-- Chocolate chips -->
+  <ellipse cx="14" cy="16" rx="3.2" ry="2.8" fill="#7a4a2a" transform="rotate(-15 14 16)"/>
+  <ellipse cx="28" cy="20" rx="2.8" ry="2.5" fill="#7a4a2a" transform="rotate(10 28 20)"/>
+  <ellipse cx="18" cy="30" rx="3" ry="2.6" fill="#7a4a2a" transform="rotate(-8 18 30)"/>
+  <ellipse cx="30" cy="33" rx="2.6" ry="2.3" fill="#7a4a2a" transform="rotate(20 30 33)"/>
+  <ellipse cx="22" cy="22" rx="2" ry="1.8" fill="#7a4a2a" transform="rotate(5 22 22)"/>
+  <!-- Subtle edge shadow -->
+  <circle cx="24" cy="24" r="20" fill="none" stroke="#c06840" stroke-width="0.8" opacity="0.4"/>
+</svg>
