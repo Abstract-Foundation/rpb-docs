@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { formatEther } from "viem";
 import {
   Badge, StatCard, ActionCard, TableWrapper, Th, Td,
   Callout, SectionTitle, SubTitle, P, Code, Changelog,
 } from "../components";
+import { DEFAULT_SEASON4_SNAPSHOT, fetchSeason4Snapshot } from "../abstractMainnet";
 
 export const meta = {
   id: "season-2",
@@ -31,7 +33,40 @@ const changelog = [
   { type: "removed", description: "Motivational Speech and Fake Partnership retired" },
 ];
 
+const payoutShares = [
+  { place: "1st", share: 50 },
+  { place: "2nd", share: 20 },
+  { place: "3rd", share: 15 },
+  { place: "4th", share: 10 },
+  { place: "5th", share: 5 },
+];
+
 export default function Season2({ activeSection }) {
+  const [season4Snapshot, setSeason4Snapshot] = useState(DEFAULT_SEASON4_SNAPSHOT);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchSeason4Snapshot()
+      .then((snapshot) => {
+        if (!cancelled) setSeason4Snapshot(snapshot);
+      })
+      .catch(() => {
+        if (!cancelled) setSeason4Snapshot(DEFAULT_SEASON4_SNAPSHOT);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const payoutRows = payoutShares.map(({ place, share }) => ({
+    place,
+    share,
+    payoutWei: season4Snapshot.prizePoolWei * BigInt(share) / 100n,
+  }));
+  const showLivePayouts = season4Snapshot.seasonStarted && season4Snapshot.prizePoolWei > 0n;
+
   return (
     <>
       {activeSection === "s2-overview" && <>
@@ -60,14 +95,20 @@ export default function Season2({ activeSection }) {
         <SubTitle>Payout Structure</SubTitle>
         <TableWrapper>
           <thead>
-            <tr><Th>Place</Th><Th align="right">Share</Th></tr>
+            <tr>
+              <Th>Place</Th>
+              <Th align="right">Share</Th>
+              {showLivePayouts && <Th align="right">Current Payout</Th>}
+            </tr>
           </thead>
           <tbody>
-            <tr><Td highlight>1st</Td><Td align="right">50%</Td></tr>
-            <tr><Td highlight>2nd</Td><Td align="right">20%</Td></tr>
-            <tr><Td highlight>3rd</Td><Td align="right">15%</Td></tr>
-            <tr><Td highlight>4th</Td><Td align="right">10%</Td></tr>
-            <tr><Td highlight>5th</Td><Td align="right">5%</Td></tr>
+            {payoutRows.map((row) => (
+              <tr key={row.place}>
+                <Td highlight>{row.place}</Td>
+                <Td align="right">{row.share}%</Td>
+                {showLivePayouts && <Td align="right" highlight>{formatEthDisplay(row.payoutWei)} ETH</Td>}
+              </tr>
+            ))}
           </tbody>
         </TableWrapper>
 
@@ -120,7 +161,12 @@ export default function Season2({ activeSection }) {
         <ActionCard name="Cleanup Crew" type="defense" effect="Remove strongest rug" duration="Instant" cost="0.60" success="100%" cooldown="30 min" notes="Guaranteed success, no matchup multiplier. Removes the single strongest active rug on your bakery." img="https://www.rugpullbakery.com/assets/images/stores/cleanup-crew.png" />
       </>}
 
-      {activeSection === "s2-calculator" && <CostCalculator />}
+      {activeSection === "s2-calculator" && (
+        <CostCalculator
+          defaultCookiesBaked={season4Snapshot.cookiesBaked}
+          seasonStarted={season4Snapshot.seasonStarted}
+        />
+      )}
     </>
   );
 }
@@ -172,9 +218,10 @@ function formatCookieCost(value) {
 }
 
 function formatCompactNumber(value) {
-  if (value >= 1000000) return `${(value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1)}M`;
-  if (value >= 1000) return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)}k`;
-  return `${Math.round(value)}`;
+  const numericValue = typeof value === "bigint" ? toSafeNumber(value) : value;
+  if (numericValue >= 1000000) return `${(numericValue / 1000000).toFixed(numericValue % 1000000 === 0 ? 0 : 1)}M`;
+  if (numericValue >= 1000) return `${(numericValue / 1000).toFixed(numericValue % 1000 === 0 ? 0 : 1)}k`;
+  return `${Math.round(numericValue)}`;
 }
 
 const MAX_SUPPLY = 20000000;
@@ -194,17 +241,36 @@ function getMatchupColor(multiplier) {
   return "#e5719a";
 }
 
-function CostCalculator() {
-  const [supply, setSupply] = useState(500000);
+function formatEthDisplay(valueWei) {
+  const value = Number(formatEther(valueWei));
+  if (value >= 100) return Math.round(value).toString();
+  if (value >= 10) return value.toFixed(2);
+  if (value >= 1) return value.toFixed(3);
+  return value.toFixed(4);
+}
+
+function toSafeNumber(value) {
+  const maxSafeInteger = BigInt(Number.MAX_SAFE_INTEGER);
+  return Number(value > maxSafeInteger ? maxSafeInteger : value);
+}
+
+function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
+  const [customSupply, setCustomSupply] = useState(null);
   const [matchup, setMatchup] = useState(1.0);
+  const supply = clampSupply(customSupply ?? toSafeNumber(defaultCookiesBaked));
   const chartMax = getChartMax(supply);
 
   return (
     <>
       <SectionTitle>Cost Calculator</SectionTitle>
       <P>
-        Use the slider to move through total cookies baked and see where the 10x floor ends. The charts below show boosts climbing once the season crosses 100,000 total supply, while rug charts overlay the standard 100% matchup with the 80% and 200% outlier cases.
+        Use the slider to move through total cookies baked and see where the 10x floor ends. It defaults to `500k` before season 4 starts, then switches to the live baked-cookie total from Abstract mainnet once the season is active.
       </P>
+      {seasonStarted && (
+        <P>
+          Current live default: <strong>{formatCompactNumber(defaultCookiesBaked)}</strong> total cookies baked.
+        </P>
+      )}
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16, marginBottom: 24 }}>
         <div>
@@ -214,7 +280,7 @@ function CostCalculator() {
           <input
             type="number"
             value={supply}
-            onChange={(e) => setSupply(clampSupply(Number(e.target.value)))}
+            onChange={(e) => setCustomSupply(clampSupply(Number(e.target.value)))}
             style={inputStyle}
           />
           <input
@@ -223,7 +289,7 @@ function CostCalculator() {
             max={MAX_SUPPLY}
             step="10000"
             value={Math.min(supply, MAX_SUPPLY)}
-            onChange={(e) => setSupply(clampSupply(Number(e.target.value)))}
+            onChange={(e) => setCustomSupply(clampSupply(Number(e.target.value)))}
             style={{ width: "100%", marginTop: 12, accentColor: "#35b0e4" }}
           />
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: "12px", color: "#9a918a" }}>
