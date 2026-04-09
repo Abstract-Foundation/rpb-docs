@@ -147,8 +147,6 @@ export default function General({ activeSection }) {
           </thead>
           <tbody>
             <tr><Td highlight>Buy-in kickback</Td><Td>Referrer</Td><Td>5% of buy-in (0.0001 ETH), paid immediately</Td></tr>
-            <tr><Td highlight>Payout weight bonus</Td><Td>Referred player</Td><Td>+5% bonus weight on payouts (10,500 bps vs 10,000)</Td></tr>
-            <tr><Td highlight>Cookie bonus</Td><Td>Referrer</Td><Td>Referral cookie bonuses from referred players' bakes</Td></tr>
           </tbody>
         </TableWrapper>
         <Callout type="tip" title="Referrer Requirements">
