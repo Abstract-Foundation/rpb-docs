@@ -28,7 +28,7 @@ export default function General({ activeSection }) {
           Rugpull Bakery is a team-based competitive game on Abstract. Players form or join bakeries (teams), bake cookies, and compete on a leaderboard for ETH prize payouts. The twist: you can boost your own bakery's production or sabotage your rivals with attacks (rugs).
         </P>
         <P>
-          Each season runs for a fixed duration (typically 7–14 days). At the end, top bakeries split the prize pool. All actions — baking, boosting, and attacking — happen on-chain with VRF-powered randomness.
+          Each season runs for a fixed duration (typically 7–14 days). At the end, top bakeries split the prize pool. All actions - baking, boosting, and attacking - happen on-chain with VRF-powered randomness.
         </P>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <StatCard label="Chain" value="Abstract" sub="L2" />
@@ -41,7 +41,7 @@ export default function General({ activeSection }) {
       {activeSection === "gen-getting-started" && <>
         <SectionTitle>Getting Started</SectionTitle>
         <P>
-          To play, you need an Abstract Global Wallet (AGW) funded with ETH. The AGW is a popup-based wallet — no extension required.
+          To play, you need an Abstract Global Wallet (AGW) funded with ETH. The AGW is a popup-based wallet - no extension required.
         </P>
         <SubTitle>Step by Step</SubTitle>
         <div style={{ background: "#ffffff", border: "1px solid #e8e4e0", borderRadius: "16px", padding: "20px", marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
@@ -61,7 +61,7 @@ export default function General({ activeSection }) {
           </div>
         </div>
         <Callout type="info" title="Auto-cooking">
-          You can let your chef cook automatically while your bakery tab is open. No need to click bake manually each time — just leave the tab running.
+          You can let your chef cook automatically while your bakery tab is open. No need to click bake manually each time - just leave the tab running.
         </Callout>
       </>}
 
@@ -77,23 +77,32 @@ export default function General({ activeSection }) {
         </P>
         <SubTitle>Auto-baking</SubTitle>
         <P>
-          The frontend has a built-in auto-baking feature that continuously bakes for you while your bakery tab is open. Powered by session keys in Abstract Global Wallet, auto-baking submits bake transactions without requiring wallet approval each time. Just toggle auto-cook on and leave the tab running — it stops when you close or navigate away from the tab.
+          The frontend has a built-in auto-baking feature that continuously bakes for you while your bakery tab is open. Powered by session keys in Abstract Global Wallet, auto-baking submits bake transactions without requiring wallet approval each time. Just toggle auto-cook on and leave the tab running - it stops when you close or navigate away from the tab.
         </P>
+        <Callout type="danger" title="Turbo Mode">
+          You can also toggle Turbo mode while auto-baking. Turbo mode submits bake transactions more often, so your bakery bakes at roughly 2x the normal auto-baking speed.
+        </Callout>
         <SubTitle>Boosts & Attacks</SubTitle>
         <P>
-          Boosts increase your multiplier, attacks (rugs) reduce a target bakery's multiplier. Both use VRF for provably random outcomes and require a small VRF fee (~0.000022 ETH). Failed rolls still consume the cookie cost. The specific catalog, costs, durations, and stacking rules change between seasons — see each season's section for details.
+          Boosts increase your multiplier, attacks (rugs) reduce a target bakery's multiplier. Both use VRF for provably random outcomes and require a small VRF fee (~0.000022 ETH). Failed rolls still consume the cookie cost. The specific catalog, costs, durations, and stacking rules change between seasons - see each season's section for details.
         </P>
       </>}
 
       {activeSection === "gen-bakeries" && <>
         <SectionTitle>Bakeries</SectionTitle>
         <P>
-          A bakery is your team for the season. Bakeries are season-scoped — a new one must be created each season. Creating a bakery and joining one are separate actions. Creating one doesn't auto-register you — you still need to pay the buy-in.
+          A bakery is your team for the season. Bakeries are season-scoped - a new one must be created each season. Creating a bakery and joining one are separate actions. Creating one doesn't auto-register you - you still need to pay the buy-in.
         </P>
         <P>
-          Bakeries are capped at 100 members. Once a bakery is full, new players must create or join a different one. Bakeries can be set to public (anyone can join) or private (password required to join). You can switch between public and private at any time.
+          Bakeries are capped at 100 members. Once a bakery is full, new players must create or join a different one. Bakeries can be set to public (anyone can join) or private (password required to join).
+        </P>
+        <P>
+          Private bakeries require a password before a player can join. The bakery leader can change the password at any time, and a bakery can be switched between public and private at any time.
         </P>
         <SubTitle>Leaving a Bakery</SubTitle>
+        <P>
+          You can leave a bakery at any time during the season.
+        </P>
         <Callout type="danger" title="100% Balance Burn">
           Leaving a bakery burns 100% of your current-season cookie balance and resets your cookies-baked total. Your cookies cannot travel between bakeries. Rejoining is allowed, but burned cookies are not restored.
         </Callout>
@@ -102,11 +111,11 @@ export default function General({ activeSection }) {
       {activeSection === "gen-outfits" && <>
         <SectionTitle>Outfits</SectionTitle>
         <P>
-          Outfits are cosmetic skins for your baker character. Each outfit is unlocked by meeting a cookie-baking threshold and holding specific tokens or NFTs. Outfits are purely cosmetic — they don't affect gameplay.
+          Outfits are cosmetic skins for your baker character. Each outfit is unlocked by meeting a cookie-baking threshold and holding specific tokens or NFTs. Outfits are purely cosmetic - they don't affect gameplay.
         </P>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16, marginBottom: 24 }}>
           {[
-            { name: "Chef", img: "https://www.rugpullbakery.com/assets/images/sprites/chef-right.png", req: "Default — available to every baker" },
+            { name: "Chef", img: "https://www.rugpullbakery.com/assets/images/sprites/chef-right.png", req: "Default - available to every baker" },
             { name: "Bearish", img: "https://www.rugpullbakery.com/assets/images/sprites/bearish.png", req: "100+ cookies + 1 collection NFT or 10K+ $BURR" },
             { name: "Ruyui", img: "https://www.rugpullbakery.com/assets/images/sprites/ruyui.png", req: "100+ cookies + hold/stake 1 collection NFT" },
             { name: "Onchain Heroes", img: "https://www.rugpullbakery.com/assets/images/sprites/och.png", req: "100+ cookies + 1 OCH NFT or 1K+ $HERO" },
@@ -123,7 +132,7 @@ export default function General({ activeSection }) {
           ))}
         </div>
         <Callout type="tip" title="More outfits coming">
-          Additional outfits are in development. Outfit availability is checked on-chain — your wallet must hold the required tokens at the time you equip.
+          Additional outfits are in development. Outfit availability is checked on-chain - your wallet must hold the required tokens at the time you equip.
         </Callout>
       </>}
 
@@ -168,8 +177,8 @@ export default function General({ activeSection }) {
           <div style={{ display: "grid", gap: 12 }}>
             {[
               ["1. Fresh contract read", "Always prefer direct on-chain reads for money-sensitive or timing-sensitive actions"],
-              ["2. /agent.json", "Updated in real-time — use for contract addresses, season state, and boost catalog"],
-              ["3. /skill.md", "Comprehensive guide — use for rules, formulas, and strategy context"],
+              ["2. /agent.json", "Updated in real-time - use for contract addresses, season state, and boost catalog"],
+              ["3. /skill.md", "Comprehensive guide - use for rules, formulas, and strategy context"],
             ].map(([label, desc], i) => (
               <div key={i} style={{ display: "flex", gap: 12, alignItems: "baseline" }}>
                 <span style={{ fontSize: "13px", fontWeight: 700, color: "#1b96ca", minWidth: 180, flexShrink: 0 }}>{label}</span>

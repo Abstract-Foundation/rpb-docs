@@ -7,11 +7,12 @@ export const meta = {
   id: "season-1",
   number: 1,
   title: "Season 1",
-  subtitle: "March 26 – April 9, 2026 · ~35 ETH prize pool",
-  status: "active",
+  subtitle: "March 26 – April 9, 2026 · 35.5679 ETH prize pool",
+  status: "ended",
   sections: [
     { id: "s1-overview", title: "Overview", icon: "🍪" },
     { id: "s1-scoring", title: "Scoring & Actions", icon: "🏆" },
+    { id: "s1-results", title: "Results", icon: "🥇" },
   ],
 };
 
@@ -24,7 +25,7 @@ export default function Season1({ activeSection }) {
           Season 1 is the first live season of Rugpull Bakery. All costs are flat cookie amounts. No bakery member cap. No matchup-based pricing.
         </P>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
-          <StatCard label="Prize Pool" value="~35 ETH" sub="from buy-ins + seed" />
+          <StatCard label="Prize Pool" value="35.57 ETH" sub="final pool" />
           <StatCard label="Duration" value="14 days" sub="Mar 26 – Apr 9" />
           <StatCard label="Boosts" value="5" sub="incl. Cleanup Crew" />
           <StatCard label="Attacks" value="4" sub="flat cookie costs" />
@@ -60,7 +61,7 @@ export default function Season1({ activeSection }) {
 
         <SubTitle>Attacks</SubTitle>
         <P>
-          All attacks cost flat cookie amounts with no matchup multiplier. Max 5 active debuffs on a bakery at once. All cooldowns are 1 hour. Recipe Sabotage is stackable — multiple can be active on the same target. Kitchen Fire is non-stackable.
+          All attacks cost flat cookie amounts with no matchup multiplier. Max 5 active debuffs on a bakery at once. All cooldowns are 1 hour. Recipe Sabotage is stackable - multiple can be active on the same target. Kitchen Fire is non-stackable.
         </P>
         <ActionCard name="Recipe Sabotage" type="rug" effect="-75% baking" duration="4 hours" cost="120 cookies" success="60%" cooldown="1 hour" img="https://www.rugpullbakery.com/assets/images/stores/recipe-sabotage.png" />
         <ActionCard name="Fake Partnership" type="rug" effect="-75% baking" duration="4 hours" cost="60 cookies" success="35%" cooldown="1 hour" img="https://www.rugpullbakery.com/assets/images/stores/fake-partnership.png" />
@@ -69,6 +70,34 @@ export default function Season1({ activeSection }) {
 
         <SubTitle>Defense</SubTitle>
         <ActionCard name="Cleanup Crew" type="defense" effect="Remove strongest rug" duration="Instant" cost="600 cookies" success="100%" cooldown="1 hour" img="https://www.rugpullbakery.com/assets/images/stores/cleanup-crew.png" />
+      </>}
+
+      {activeSection === "s1-results" && <>
+        <SectionTitle>Results</SectionTitle>
+        <P>
+          Season 1 finished with a total prize pool of 35.5679 ETH.
+        </P>
+        <TableWrapper>
+          <thead>
+            <tr><Th>Place</Th><Th>Bakery</Th><Th align="right">Prize</Th></tr>
+          </thead>
+          <tbody>
+            <tr><Td highlight>1st</Td><Td>Cockring Cakehouse</Td><Td align="right">24.8975 ETH</Td></tr>
+            <tr><Td highlight>2nd</Td><Td>cygaar&apos;s patisserie</Td><Td align="right">7.1136 ETH</Td></tr>
+            <tr><Td highlight>3rd</Td><Td>Cheese&apos;s Cookie Den</Td><Td align="right">3.5568 ETH</Td></tr>
+          </tbody>
+        </TableWrapper>
+        <P>
+          More detailed results are available at{" "}
+          <a
+            href="https://rugpullbakery.com/season/1"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#1b96ca", textDecoration: "none", fontWeight: 600 }}
+          >
+            rugpullbakery.com/season/1
+          </a>.
+        </P>
       </>}
     </>
   );
