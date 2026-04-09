@@ -177,9 +177,15 @@ function formatCompactNumber(value) {
   return `${Math.round(value)}`;
 }
 
+const MAX_SUPPLY = 20000000;
+
+function clampSupply(value) {
+  return Math.max(0, Math.min(MAX_SUPPLY, value));
+}
+
 function getChartMax(currentCookies) {
   const padded = Math.ceil(Math.max(1000000, currentCookies * 1.2) / 100000) * 100000;
-  return Math.max(1000000, padded);
+  return Math.min(MAX_SUPPLY, Math.max(1000000, padded));
 }
 
 function getMatchupColor(multiplier) {
@@ -203,27 +209,27 @@ function CostCalculator() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16, marginBottom: 24 }}>
         <div>
           <label style={{ display: "block", fontSize: "12px", color: "#9a918a", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 600, marginBottom: 6 }}>
-            Total Cookies Baked / Supply
+            Total Cookies Supply
           </label>
           <input
             type="number"
             value={supply}
-            onChange={(e) => setSupply(Math.max(0, Number(e.target.value)))}
+            onChange={(e) => setSupply(clampSupply(Number(e.target.value)))}
             style={inputStyle}
           />
           <input
             type="range"
             min="0"
-            max={chartMax}
+            max={MAX_SUPPLY}
             step="10000"
-            value={Math.min(supply, chartMax)}
-            onChange={(e) => setSupply(Number(e.target.value))}
+            value={Math.min(supply, MAX_SUPPLY)}
+            onChange={(e) => setSupply(clampSupply(Number(e.target.value)))}
             style={{ width: "100%", marginTop: 12, accentColor: "#35b0e4" }}
           />
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: "12px", color: "#9a918a" }}>
             <span>0</span>
             <span>10x floor ends at 100k</span>
-            <span>{formatCompactNumber(chartMax)}</span>
+            <span>{formatCompactNumber(MAX_SUPPLY)}</span>
           </div>
         </div>
         <div>
@@ -586,7 +592,7 @@ function PriceChart({ lines, currentX, maxX, compact = false, area }) {
               fill="#7a726b"
               fontFamily="inherit"
             >
-              Total cookies baked / supply
+              Total cookies supply
             </text>
             <text
               x={18}
