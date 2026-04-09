@@ -9,7 +9,7 @@ export const meta = {
   number: 2,
   title: "Season 2",
   subtitle: "Balance-based scoring, matchup multipliers, and a trimmed action catalog",
-  status: "upcoming",
+  status: "active",
   sections: [
     { id: "s2-overview", title: "Overview", icon: "🍪" },
     { id: "s2-scoring", title: "Scoring & Actions", icon: "🏆" },
@@ -73,11 +73,11 @@ export default function Season2({ activeSection }) {
 
         <SubTitle>Dynamic Pricing</SubTitle>
         <P>
-          All action costs scale with total cookie supply. As more cookies are baked globally, prices go up — but so do balances, keeping costs proportionally consistent. Boosts and Cleanup Crew use a flat supply-scaled formula. Rugs add a matchup multiplier based on the balance ratio between attacker and target.
+          All action costs scale with total cookie supply, but there is a minimum floor at low supply. Below 100,000 total supply, actions cost 10x their base cost. After 100,000 total supply, normal supply scaling takes over. Boosts and Cleanup Crew use a flat supply-scaled formula. Rugs add a matchup multiplier based on the balance ratio between attacker and target.
         </P>
         <Callout type="info" title="Cost Formulas">
-          <strong>Boosts & Cleanup:</strong> baseCost × (totalCookieSupply / 10,000)<br/>
-          <strong>Rugs:</strong> baseCost × (totalCookieSupply / 10,000) × matchupMultiplier
+          <strong>Boosts & Cleanup:</strong> baseCost × max(10, totalCookieSupply / 10,000)<br/>
+          <strong>Rugs:</strong> baseCost × max(10, totalCookieSupply / 10,000) × matchupMultiplier
         </Callout>
 
         <SubTitle>Boosts</SubTitle>
@@ -105,13 +105,13 @@ export default function Season2({ activeSection }) {
             <tr><Th>Matchup</Th><Th align="right">Multiplier</Th><Th>Interpretation</Th></tr>
           </thead>
           <tbody>
-            <tr><Td>A ≤ 0.50 × T</Td><Td align="right">0.80×</Td><Td>Punching well up — discounted</Td></tr>
-            <tr><Td>0.50 × T {"<"} A ≤ 0.80 × T</Td><Td align="right">0.90×</Td><Td>Punching up — slight discount</Td></tr>
-            <tr><Td>0.80 × T {"<"} A {"<"} 1.25 × T</Td><Td align="right">1.00×</Td><Td>Even matchup — standard rate</Td></tr>
+            <tr><Td>A ≤ 0.50 × T</Td><Td align="right">0.80×</Td><Td>Punching well up - discounted</Td></tr>
+            <tr><Td>0.50 × T {"<"} A ≤ 0.80 × T</Td><Td align="right">0.90×</Td><Td>Punching up - slight discount</Td></tr>
+            <tr><Td>0.80 × T {"<"} A {"<"} 1.25 × T</Td><Td align="right">1.00×</Td><Td>Even matchup - standard rate</Td></tr>
             <tr><Td>1.25 × T ≤ A {"<"} 2.00 × T</Td><Td align="right">1.20×</Td><Td>Slightly punching down</Td></tr>
-            <tr><Td>2.00 × T ≤ A {"<"} 4.00 × T</Td><Td align="right">1.50×</Td><Td>Punching down — expensive</Td></tr>
-            <tr><Td>4.00 × T ≤ A {"<"} 8.00 × T</Td><Td align="right">1.80×</Td><Td>Hard bullying — very expensive</Td></tr>
-            <tr><Td>A ≥ 8.00 × T</Td><Td align="right">2.00×</Td><Td>Extreme bullying — maximum penalty</Td></tr>
+            <tr><Td>2.00 × T ≤ A {"<"} 4.00 × T</Td><Td align="right">1.50×</Td><Td>Punching down - expensive</Td></tr>
+            <tr><Td>4.00 × T ≤ A {"<"} 8.00 × T</Td><Td align="right">1.80×</Td><Td>Hard bullying - very expensive</Td></tr>
+            <tr><Td>A ≥ 8.00 × T</Td><Td align="right">2.00×</Td><Td>Extreme bullying - maximum penalty</Td></tr>
           </tbody>
         </TableWrapper>
 
@@ -157,7 +157,7 @@ function CostCalculator() {
     <>
       <SectionTitle>Cost Calculator</SectionTitle>
       <P>
-        Enter the total cookie supply and matchup multiplier to see what each action costs. The matchup multiplier only applies to rugs.
+        Enter the total cookie supply and matchup multiplier to see what each action costs. Under 100,000 total supply, the base cost is multiplied by 10. The matchup multiplier only applies to rugs.
       </P>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
@@ -222,7 +222,8 @@ function CostCalculator() {
         <tbody>
           {actions.map((a) => {
             const mult = a.type === "rug" ? matchup : 1;
-            const cost = a.baseCost * (supply / 10000) * mult;
+            const supplyMultiplier = Math.max(10, supply / 10000);
+            const cost = a.baseCost * supplyMultiplier * mult;
             return (
               <tr key={a.name}>
                 <Td highlight>{a.name}</Td>
@@ -233,7 +234,7 @@ function CostCalculator() {
                       {mult.toFixed(1)}×
                     </span>
                   ) : (
-                    <span style={{ color: "#9a918a" }}>—</span>
+                    <span style={{ color: "#9a918a" }}>-</span>
                   )}
                 </Td>
                 <Td align="right" highlight>
@@ -246,7 +247,7 @@ function CostCalculator() {
       </TableWrapper>
 
       <Callout type="info" title="How to read this">
-        Actual cost = baseCost × (totalCookieSupply / 10,000) for boosts and defense. For rugs, multiply by the matchup multiplier too. As the season progresses and more cookies are baked, costs go up — but so does everyone's balance.
+        Actual cost = baseCost × max(10, totalCookieSupply / 10,000) for boosts and defense. For rugs, multiply by the matchup multiplier too. Under 100,000 supply, the floor keeps actions at 10x base cost. After that, costs scale upward with supply.
       </Callout>
     </>
   );
