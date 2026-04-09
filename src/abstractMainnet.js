@@ -4,6 +4,7 @@ import { abstract } from "viem/chains";
 
 export const SEASON4_ID = 4n;
 
+const COOKIE_SCALE = 10000n;
 const DEFAULT_COOKIES_BAKED = 500000n;
 
 const contracts = {
@@ -67,6 +68,7 @@ export async function fetchSeason4Snapshot() {
   const currentSeasonId = currentSeasonIdResult.status === "success" ? currentSeasonIdResult.result : 0n;
   const rawPrizePoolWei = prizePoolResult.status === "success" ? prizePoolResult.result : 0n;
   const rawCookiesBaked = cookiesBakedResult.status === "success" ? cookiesBakedResult.result : 0n;
+  const normalizedCookiesBaked = rawCookiesBaked / COOKIE_SCALE;
   const seasonStarted = currentSeasonId === SEASON4_ID;
 
   return {
@@ -74,6 +76,6 @@ export async function fetchSeason4Snapshot() {
     currentSeasonId,
     seasonStarted,
     prizePoolWei: seasonStarted ? rawPrizePoolWei : 0n,
-    cookiesBaked: seasonStarted ? rawCookiesBaked : DEFAULT_COOKIES_BAKED,
+    cookiesBaked: seasonStarted ? normalizedCookiesBaked : DEFAULT_COOKIES_BAKED,
   };
 }
