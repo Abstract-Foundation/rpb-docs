@@ -214,8 +214,8 @@ export default function Season3({ activeSection }) {
           Season 3 has a three-rug attack shop with retuned costs, durations, cooldown behavior, and success rates. A bakery can have only <strong>one active rug at a time</strong>, and every rug is further shaped by matchup multipliers, parity scaling, and congestion cooldown.
         </P>
         <ActionCard name="Recipe Sabotage" type="rug" effect="-20% baking" duration="20 minutes" cost=".5 cookies" success="60%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/recipe-sabotage.png" />
-        <ActionCard name="Kitchen Fire" type="rug" effect="-35% baking" duration="25 minutes" cost="1.05 cookies" success="40%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/kitchen-fire.png" />
-        <ActionCard name="Supplier Strike" type="rug" effect="-60% baking" duration="12 minutes" cost=".85 cookies" success="22%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/supplier-strike.png" />
+        <ActionCard name="Supplier Strike" type="rug" effect="-35% baking" duration="25 minutes" cost="1.05 cookies" success="40%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/supplier-strike.png" />
+        <ActionCard name="Kitchen Fire" type="rug" effect="-60% baking" duration="12 minutes" cost=".85 cookies" success="22%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/kitchen-fire.png" />
         <Callout type="warning" title="Rug Slot">
           Only one rug can be active on a bakery at a time. That makes target selection and timing more important, because a fresh rug attempt cannot stack on top of another active rug.
         </Callout>
@@ -363,13 +363,13 @@ export default function Season3({ activeSection }) {
 }
 
 const actions = [
-  { name: "Ad Campaign", baseCost: 0.30, type: "boost" },
-  { name: "Secret Recipe", baseCost: 0.62, type: "boost" },
-  { name: "Chef's Help", baseCost: 1.23, type: "boost" },
+  { name: "Ad Campaign", baseCost: 0.28, type: "boost" },
+  { name: "Secret Recipe", baseCost: 0.70, type: "boost" },
+  { name: "Chef's Help", baseCost: 1.35, type: "boost" },
   { name: "Cleanup Crew", baseCost: 0.60, type: "defense" },
-  { name: "Recipe Sabotage", baseCost: 0.45, type: "rug" },
-  { name: "Supplier Strike", baseCost: 0.76, type: "rug" },
-  { name: "Kitchen Fire", baseCost: 0.98, type: "rug" },
+  { name: "Recipe Sabotage", baseCost: 0.50, type: "rug" },
+  { name: "Supplier Strike", baseCost: 0.85, type: "rug" },
+  { name: "Kitchen Fire", baseCost: 1.05, type: "rug" },
 ];
 
 const inputStyle = {
