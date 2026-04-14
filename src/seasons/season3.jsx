@@ -115,10 +115,6 @@ export default function Season3({ activeSection }) {
         <P>
           Season 3 divides the prize pool into two buckets. The leaderboard bucket rewards final placement, while the activity bucket rewards players who stay active and engaged throughout the season.
         </P>
-        <Code>
-          leaderboard bucket = total prize pool x 70%{"\n"}
-          activity bucket = total prize pool x 30%
-        </Code>
 
         <SubTitle>Leaderboard Bucket</SubTitle>
         <P>
@@ -204,19 +200,47 @@ export default function Season3({ activeSection }) {
 
         <SubTitle>Boosts</SubTitle>
         <P>
-          Season 3 uses the same boost catalog as season 1. The actions below keep their same effect profiles, durations, flat cookie costs, and listed success rates, but season 3 still enforces the new single active boost cap.
+          Season 3 keeps a three-boost shop, but the season 3 values are tuned specifically for this season. A bakery can have only <strong>one active boost at a time</strong>, so every boost choice competes for the same single slot.
         </P>
         <ActionCard name="Ad Campaign" type="boost" effect="+25% baking" duration="25 minutes" cost=".28 cookies" success="85%" cooldown="20 minutes" img="https://www.rugpullbakery.com/assets/images/stores/ad-campaign.png" />
-        <ActionCard name="Secret Recipe" type="boost" effect="+50% baking" duration="8 hours" cost=".7 cookies" success="55%" cooldown="30 minutes" img="https://www.rugpullbakery.com/assets/images/stores/secret-recipe.png" />
-        <ActionCard name="Chef's Help" type="boost" effect="+100% baking" duration="8 hours" cost="1.35 cookies" success="32%" cooldown="45 minutes" img="https://www.rugpullbakery.com/assets/images/stores/chefs-help.png" />
+        <ActionCard name="Secret Recipe" type="boost" effect="+50% baking" duration="30 minutes" cost=".7 cookies" success="55%" cooldown="30 minutes" img="https://www.rugpullbakery.com/assets/images/stores/secret-recipe.png" />
+        <ActionCard name="Chef's Help" type="boost" effect="+100% baking" duration="20 minutes" cost="1.35 cookies" success="32%" cooldown="45 minutes" img="https://www.rugpullbakery.com/assets/images/stores/chefs-help.png" />
+        <Callout type="info" title="Boost Slot">
+          Only one boost can be active on a bakery at a time. If you want stronger output later, timing the slot matters as much as choosing the effect.
+        </Callout>
 
         <SubTitle>Attacks</SubTitle>
         <P>
-          Season 3 also uses the same attack catalog as season 1. The action list below shows the base attack profiles, while parity scaling and congestion cooldown add the new season 3 constraints on top.
+          Season 3 has a three-rug attack shop with retuned costs, durations, cooldown behavior, and success rates. A bakery can have only <strong>one active rug at a time</strong>, and every rug is further shaped by matchup multipliers, parity scaling, and congestion cooldown.
         </P>
         <ActionCard name="Recipe Sabotage" type="rug" effect="-20% baking" duration="20 minutes" cost=".5 cookies" success="60%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/recipe-sabotage.png" />
         <ActionCard name="Kitchen Fire" type="rug" effect="-35% baking" duration="25 minutes" cost="1.05 cookies" success="40%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/kitchen-fire.png" />
         <ActionCard name="Supplier Strike" type="rug" effect="-60% baking" duration="12 minutes" cost=".85 cookies" success="22%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/supplier-strike.png" />
+        <Callout type="warning" title="Rug Slot">
+          Only one rug can be active on a bakery at a time. That makes target selection and timing more important, because a fresh rug attempt cannot stack on top of another active rug.
+        </Callout>
+
+        <SubTitle>Rug Mechanics</SubTitle>
+        <P>
+          Season 3 rugs are affected by three separate systems. Two of them change cost, and one changes hit chance:
+        </P>
+        <TableWrapper>
+          <thead>
+            <tr>
+              <Th>Mechanic</Th>
+              <Th>Affects</Th>
+              <Th>How It Changes Play</Th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><Td highlight>Matchup multiplier</Td><Td>Cost</Td><Td>Changes the baseline rug price based on the attacker/target matchup</Td></tr>
+            <tr><Td highlight>Parity scaling</Td><Td>Chance to land</Td><Td>Reduces effective success odds when a much weaker bakery attacks far up the board</Td></tr>
+            <tr><Td highlight>Congestion cooldown</Td><Td>Cost</Td><Td>Adds a temporary extra price premium after a rug expires on that bakery</Td></tr>
+          </tbody>
+        </TableWrapper>
+        <P>
+          The key distinction is simple: <strong>matchup multiplier</strong> and <strong>congestion cooldown</strong> change what you pay, while <strong>parity scaling</strong> changes how likely the rug is to connect. Those mechanics can stack, so a bad setup can be both expensive and low-odds.
+        </P>
 
         <SubTitle>Defense</SubTitle>
         <ActionCard name="Cleanup Crew" type="defense" effect="Remove active rug" duration="Instant" cost=".6 cookies" success="100%" cooldown="30 minutes" img="https://www.rugpullbakery.com/assets/images/stores/cleanup-crew.png" />
@@ -299,7 +323,7 @@ export default function Season3({ activeSection }) {
             <tr>
               <Td highlight>Over the next 30 minutes</Td>
               <Td align="right">Decays to 0%</Td>
-              <Td>Linear cooldown back to the base rug price</Td>
+              <Td>Stays elevated, then drops off sharply toward the end of the window</Td>
             </tr>
           </tbody>
         </TableWrapper>
@@ -318,7 +342,7 @@ export default function Season3({ activeSection }) {
           formatY={(value) => `+${value}%`}
         />
         <P>
-          This mechanic changes <strong>how much the next rug costs</strong>. Right after a rug expires, the next rug on that bakery starts at double price. That surcharge then decays linearly back to zero over the next 30 minutes.
+          This mechanic changes <strong>how much the next rug costs</strong>. Right after a rug expires, the next rug on that bakery starts at double price. The surcharge stays relatively high for most of the 30-minute window, then falls off more sharply as the cooldown finishes.
         </P>
         <Callout type="tip" title="Cost Stacking">
           The congestion premium is an extra cost layer on top of the rug's normal live price. Parity scaling affects hit rate, while congestion cooldown affects price.
