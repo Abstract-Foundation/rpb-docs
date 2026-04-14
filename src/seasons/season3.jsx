@@ -214,9 +214,9 @@ export default function Season3({ activeSection }) {
         <P>
           Season 3 also uses the same attack catalog as season 1. The action list below shows the base attack profiles, while parity scaling and congestion cooldown add the new season 3 constraints on top.
         </P>
-        <ActionCard name="Recipe Sabotage" type="rug" effect="-20% baking" duration="20 minutes" cost=".42 cookies" success="60%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/recipe-sabotage.png" />
-        <ActionCard name="Kitchen Fire" type="rug" effect="-35% baking" duration="25 minutes" cost=".72 cookies" success="40%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/kitchen-fire.png" />
-        <ActionCard name="Supplier Strike" type="rug" effect="-60% baking" duration="12 minutes" cost=".98 cookies" success="22%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/supplier-strike.png" />
+        <ActionCard name="Recipe Sabotage" type="rug" effect="-20% baking" duration="20 minutes" cost=".5 cookies" success="60%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/recipe-sabotage.png" />
+        <ActionCard name="Kitchen Fire" type="rug" effect="-35% baking" duration="25 minutes" cost="1.05 cookies" success="40%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/kitchen-fire.png" />
+        <ActionCard name="Supplier Strike" type="rug" effect="-60% baking" duration="12 minutes" cost=".85 cookies" success="22%" cooldown="None" img="https://www.rugpullbakery.com/assets/images/stores/supplier-strike.png" />
 
         <SubTitle>Defense</SubTitle>
         <ActionCard name="Cleanup Crew" type="defense" effect="Remove active rug" duration="Instant" cost=".6 cookies" success="100%" cooldown="30 minutes" img="https://www.rugpullbakery.com/assets/images/stores/cleanup-crew.png" />
