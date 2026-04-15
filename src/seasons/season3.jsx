@@ -71,26 +71,26 @@ const changelog = [
 ];
 
 const leaderboardTopTen = [
-  { place: "1st", share: "12.0%" },
-  { place: "2nd", share: "8.5%" },
-  { place: "3rd", share: "6.5%" },
-  { place: "4th", share: "5.0%" },
-  { place: "5th", share: "4.0%" },
-  { place: "6th", share: "3.2%" },
-  { place: "7th", share: "2.6%" },
-  { place: "8th", share: "2.2%" },
+  { place: "1st", share: "7.5%" },
+  { place: "2nd", share: "5.5%" },
+  { place: "3rd", share: "4.5%" },
+  { place: "4th", share: "3.5%" },
+  { place: "5th", share: "3.0%" },
+  { place: "6th", share: "2.7%" },
+  { place: "7th", share: "2.4%" },
+  { place: "8th", share: "2.1%" },
   { place: "9th", share: "1.9%" },
   { place: "10th", share: "1.7%" },
 ];
 
 const leaderboardRanges = [
-  { places: "11-25", share: "19.5%", split: "15 players", perPlayer: "1.30%" },
-  { places: "26-50", share: "18.0%", split: "25 players", perPlayer: "0.72%" },
+  { places: "11-25", share: "22.0%", split: "15 players", perPlayer: "1.47%" },
+  { places: "26-50", share: "22.0%", split: "25 players", perPlayer: "0.88%" },
   {
     places: "51-100",
-    share: "14.9%",
+    share: "21.21%",
     split: "50 players",
-    perPlayer: "0.298%",
+    perPlayer: "0.424%",
   },
 ];
 
@@ -228,7 +228,7 @@ export default function Season3({ activeSection }) {
               ))}
               <tr>
                 <Td highlight>Top 10 total</Td>
-                <Td align="right">47.6%</Td>
+                <Td align="right">34.8%</Td>
               </tr>
             </tbody>
           </TableWrapper>
