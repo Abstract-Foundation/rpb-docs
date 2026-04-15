@@ -23,6 +23,7 @@ export const meta = {
   number: 3,
   title: "Season 3",
   subtitle: "Solo bakeries, split payouts, and tighter rugging rules",
+  status: "upcoming",
   sections: [
     { id: "s3-overview", title: "Overview", icon: "🍪" },
     { id: "s3-payouts", title: "Payouts & Scoring", icon: "🏆" },
@@ -34,7 +35,7 @@ export const meta = {
 const changelog = [
   {
     type: "changed",
-    description: "Bakery member cap reduced to 1 (solo play)",
+    description: "Bakery member cap reduced to 1 (solo bakeries)",
   },
   {
     type: "changed",
@@ -42,11 +43,11 @@ const changelog = [
   },
   {
     type: "changed",
-    description: "Leaderboard payouts expand to the top 100 players",
+    description: "Leaderboard payouts expand to the top 100 bakeries",
   },
   {
     type: "changed",
-    description: "Activity payouts are based on continued meaningful activty",
+    description: "Activity payouts are based on continued meaningful activity",
   },
   {
     type: "changed",
@@ -268,11 +269,18 @@ export default function Season3({ activeSection }) {
             rugs, and Cleanup Crew usage.
           </P>
           <P>
+            Activity score is not meant to scale linearly with raw size, spend,
+            or one-time volume. Extra activity still helps, but the marginal
+            benefit tapers off, which creates diminishing returns and makes the
+            activity bucket less of a pure whale game.
+          </P>
+          <P>
             The system is designed to reward players who show up consistently
-            and use the full toolset, not just players who spam one action type.
-            In general terms, activity scoring favors players who bake
-            regularly, stay active across multiple days, and mix in meaningful
-            shop interaction rather than relying on pure baking volume alone.
+            and use the full toolset, not just players who brute-force one
+            action type. In general terms, activity scoring favors players who
+            bake regularly, stay active across multiple days, and mix in
+            meaningful interactions rather than relying on pure baking
+            volume alone.
           </P>
 
           <SubTitle>Activity Tiers</SubTitle>
