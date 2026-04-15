@@ -116,10 +116,14 @@ const parityBreakpoints = [
   { x: 100, y: 100 },
 ];
 
+const CONGESTION_WINDOW_SECONDS = 1800;
+const CONGESTION_EXPONENT = 3;
+
 const congestionCurve = Array.from({ length: 31 }, (_, minute) => {
-  const progress = minute / 30;
-  const normalized = 1 - progress ** 4;
-  return { x: minute, y: normalized * 100 };
+  const seconds = minute * 60;
+  const extraCostMultiplier =
+    1 - (seconds / CONGESTION_WINDOW_SECONDS) ** CONGESTION_EXPONENT;
+  return { x: minute, y: Math.max(0, extraCostMultiplier) * 100 };
 });
 
 export default function Season3({ activeSection }) {
@@ -637,12 +641,50 @@ function getSupplyMultiplier(totalCookies) {
   return Math.max(10, totalCookies / 10000);
 }
 
-function getActionCost(action, totalCookies, matchupMultiplier = 1) {
+function getCongestionMultiplier(minutesSinceLastRug) {
+  const seconds = Math.max(
+    0,
+    Math.min(CONGESTION_WINDOW_SECONDS, minutesSinceLastRug * 60),
+  );
+  return (
+    1 +
+    (1 - (seconds / CONGESTION_WINDOW_SECONDS) ** CONGESTION_EXPONENT)
+  );
+}
+
+function getMatchupMultiplierFromRelativeStrength(relativeStrengthPercent) {
+  if (relativeStrengthPercent <= 50) return 0.8;
+  if (relativeStrengthPercent <= 80) return 0.9;
+  if (relativeStrengthPercent < 125) return 1.0;
+  if (relativeStrengthPercent < 200) return 1.2;
+  if (relativeStrengthPercent < 400) return 1.5;
+  if (relativeStrengthPercent < 800) return 1.8;
+  return 2.0;
+}
+
+function getParityScalerFromRelativeStrength(relativeStrengthPercent) {
+  if (relativeStrengthPercent < 25) return 0.25;
+  if (relativeStrengthPercent < 40) return 0.5;
+  if (relativeStrengthPercent < 50) return 0.75;
+  return 1.0;
+}
+
+function getActionCost(
+  action,
+  totalCookies,
+  matchupMultiplier = 1,
+  minutesSinceLastRug = 30,
+) {
   const supplyMultiplier = getSupplyMultiplier(totalCookies);
+  if (action.type !== "rug") {
+    return action.baseCost * supplyMultiplier;
+  }
+
   return (
     action.baseCost *
     supplyMultiplier *
-    (action.type === "rug" ? matchupMultiplier : 1)
+    matchupMultiplier *
+    getCongestionMultiplier(minutesSinceLastRug)
   );
 }
 
@@ -686,18 +728,22 @@ function toSafeNumber(value) {
 
 function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
   const [customSupply, setCustomSupply] = useState(null);
-  const [matchup, setMatchup] = useState(1.0);
+  const [relativeStrength, setRelativeStrength] = useState(100);
+  const [minutesSinceLastRug, setMinutesSinceLastRug] = useState(30);
   const supply = clampSupply(customSupply ?? toSafeNumber(defaultCookiesBaked));
   const chartMax = getChartMax(supply);
+  const matchup = getMatchupMultiplierFromRelativeStrength(relativeStrength);
+  const parityScaler = getParityScalerFromRelativeStrength(relativeStrength);
+  const congestionMultiplier = getCongestionMultiplier(minutesSinceLastRug);
 
   return (
     <>
       <SectionTitle>Cost Calculator</SectionTitle>
       <P>
-        This mirrors the season 2 calculator so you can quickly estimate how the
-        base pricing curve behaves as total cookies supply changes. It defaults
-        to `500k` before season 4 starts, then switches to the live baked-cookie
-        total from Abstract mainnet once the season is active.
+        This calculator estimates season 3 action pricing as total cookies
+        supply changes. It defaults to `500k` before season 4 starts, then
+        switches to the live baked-cookie total from Abstract mainnet once the
+        season is active.
       </P>
       {seasonStarted && (
         <P>
@@ -774,40 +820,116 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
               marginBottom: 6,
             }}
           >
-            Matchup Multiplier (Rugs)
+            Attacker Strength vs Target
           </label>
           <input
             type="number"
-            value={matchup}
-            step="0.1"
-            min="0.8"
-            max="2.0"
-            onChange={(e) => setMatchup(Math.max(0.1, Number(e.target.value)))}
+            value={relativeStrength}
+            step="1"
+            min="0"
+            max="1000"
+            onChange={(e) =>
+              setRelativeStrength(Math.max(0, Math.min(1000, Number(e.target.value))))
+            }
             style={inputStyle}
           />
           <div
             style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}
           >
-            {[0.8, 0.9, 1.0, 1.2, 1.5, 1.8, 2.0].map((m) => (
+            {[25, 40, 50, 80, 100, 125, 200, 400, 800].map((value) => (
               <button
-                key={m}
-                onClick={() => setMatchup(m)}
+                key={value}
+                onClick={() => setRelativeStrength(value)}
                 style={{
                   padding: "4px 10px",
                   border: "1px solid",
-                  borderColor: matchup === m ? "#35b0e4" : "#e8e4e0",
+                  borderColor:
+                    relativeStrength === value ? "#35b0e4" : "#e8e4e0",
                   borderRadius: "70px",
-                  background: matchup === m ? "#e0f2fe" : "#ffffff",
-                  color: matchup === m ? "#1b96ca" : "#7a726b",
+                  background:
+                    relativeStrength === value ? "#e0f2fe" : "#ffffff",
+                  color: relativeStrength === value ? "#1b96ca" : "#7a726b",
                   fontSize: "12px",
                   fontWeight: 600,
                   cursor: "pointer",
                   fontFamily: "inherit",
                 }}
               >
-                {m.toFixed(1)}×
+                {value}%
               </button>
             ))}
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            step="5"
+            value={relativeStrength}
+            onChange={(e) => setRelativeStrength(Number(e.target.value))}
+            style={{ width: "100%", marginTop: 12, accentColor: "#e5719a" }}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 6,
+              fontSize: "12px",
+              color: "#9a918a",
+            }}
+          >
+            <span>0%</span>
+            <span>Attacker balance as % of target balance</span>
+            <span>1000%</span>
+          </div>
+        </div>
+        <div>
+          <label
+            style={{
+              display: "block",
+              fontSize: "12px",
+              color: "#9a918a",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              fontWeight: 600,
+              marginBottom: 6,
+            }}
+          >
+            Minutes Since Last Rug
+          </label>
+          <input
+            type="number"
+            value={minutesSinceLastRug}
+            min="0"
+            max="30"
+            step="1"
+            onChange={(e) =>
+              setMinutesSinceLastRug(
+                Math.max(0, Math.min(30, Number(e.target.value))),
+              )
+            }
+            style={inputStyle}
+          />
+          <input
+            type="range"
+            min="0"
+            max="30"
+            step="1"
+            value={minutesSinceLastRug}
+            onChange={(e) => setMinutesSinceLastRug(Number(e.target.value))}
+            style={{ width: "100%", marginTop: 12, accentColor: "#f59e0b" }}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 6,
+              fontSize: "12px",
+              color: "#9a918a",
+            }}
+          >
+            <span>0m</span>
+            <span>Congestion premium fades by 30m</span>
+            <span>30m</span>
           </div>
         </div>
       </div>
@@ -822,9 +944,24 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
         />
         <StatCard label="Boost Floor" value="10× base" sub="until 100k baked" />
         <StatCard
+          label="Relative Strength"
+          value={`${relativeStrength.toFixed(0)}%`}
+          sub="attacker vs target"
+        />
+        <StatCard
           label="Rug Matchup"
           value={`${matchup.toFixed(1)}×`}
-          sub="calculator view only"
+          sub="derived cost multiplier"
+        />
+        <StatCard
+          label="Parity Chance"
+          value={`${(parityScaler * 100).toFixed(0)}%`}
+          sub="derived hit-rate scaler"
+        />
+        <StatCard
+          label="Congestion"
+          value={`${congestionMultiplier.toFixed(2)}×`}
+          sub={`${minutesSinceLastRug}m since last rug`}
         />
       </div>
 
@@ -847,9 +984,10 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
 
       <SubTitle>Rug Price Growth</SubTitle>
       <P>
-        This calculator keeps the same season 2 cost model for quick
-        comparisons. The selected matchup multiplier is still shown as the main
-        line, and the shaded cone shows the wider 80%-200% range.
+        Rug prices below include the derived matchup multiplier from the
+        selected attacker/target strength ratio plus the selected congestion
+        state. The shaded cone shows the full 80%-200% matchup range at the
+        current minutes-since-last-rug input.
       </P>
       <div
         style={{
@@ -890,8 +1028,12 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
               style={{ fontSize: "12px", color: "#9a918a", marginBottom: 12 }}
             >
               Base cost {action.baseCost.toFixed(2)}. Current selected price:{" "}
-              {formatCookieCost(getActionCost(action, supply, matchup))} cookies
-              at {matchup.toFixed(1)}×.
+              {formatCookieCost(
+                getActionCost(action, supply, matchup, minutesSinceLastRug),
+              )}{" "}
+              cookies at {relativeStrength.toFixed(0)}% strength,{" "}
+              {matchup.toFixed(1)}× matchup, and{" "}
+              {congestionMultiplier.toFixed(2)}× congestion.
             </div>
             <PriceChart
               area={{
@@ -900,26 +1042,44 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
                 lowLabel: rugMultipliers[0].shortLabel,
                 highLabel: rugMultipliers[1].shortLabel,
                 lowAt: (cookies) =>
-                  getActionCost(action, cookies, rugMultipliers[0].value),
+                  getActionCost(
+                    action,
+                    cookies,
+                    rugMultipliers[0].value,
+                    minutesSinceLastRug,
+                  ),
                 highAt: (cookies) =>
-                  getActionCost(action, cookies, rugMultipliers[1].value),
+                  getActionCost(
+                    action,
+                    cookies,
+                    rugMultipliers[1].value,
+                    minutesSinceLastRug,
+                  ),
                 currentLow: getActionCost(
                   action,
                   supply,
                   rugMultipliers[0].value,
+                  minutesSinceLastRug,
                 ),
                 currentHigh: getActionCost(
                   action,
                   supply,
                   rugMultipliers[1].value,
+                  minutesSinceLastRug,
                 ),
               }}
               lines={[
                 {
-                  label: `Selected ${matchup.toFixed(1)}x`,
+                  label: `Selected ${relativeStrength.toFixed(0)}%`,
                   color: getMatchupColor(matchup),
-                  valueAt: (cookies) => getActionCost(action, cookies, matchup),
-                  currentValue: getActionCost(action, supply, matchup),
+                  valueAt: (cookies) =>
+                    getActionCost(action, cookies, matchup, minutesSinceLastRug),
+                  currentValue: getActionCost(
+                    action,
+                    supply,
+                    matchup,
+                    minutesSinceLastRug,
+                  ),
                 },
               ]}
               currentX={supply}
@@ -941,8 +1101,12 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
         </thead>
         <tbody>
           {actions.map((a) => {
-            const mult = a.type === "rug" ? matchup : 1;
-            const cost = getActionCost(a, supply, matchup);
+            const cost = getActionCost(
+              a,
+              supply,
+              matchup,
+              minutesSinceLastRug,
+            );
             return (
               <tr key={a.name}>
                 <Td highlight>{a.name}</Td>
@@ -959,7 +1123,7 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
                               : "#5f5f5f",
                       }}
                     >
-                      {mult.toFixed(1)}×
+                      {(matchup * congestionMultiplier).toFixed(2)}×
                     </span>
                   ) : (
                     <span style={{ color: "#9a918a" }}>-</span>
@@ -975,17 +1139,17 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
       </TableWrapper>
 
       <Callout type="info" title="How to read this">
-        This view keeps the same season 2 pricing curve for boosts and rugs. It
-        is useful for understanding the 10x base-cost floor and supply scaling,
-        but it does not model season 3's new parity scaling or congestion
-        cooldown.
+        Boost prices use the 10x base-cost floor and supply scaling only. Rug
+        prices in this calculator derive matchup from attacker-vs-target
+        strength, then apply congestion cooldown on top of that same supply
+        curve.
       </Callout>
 
-      <Callout type="warning" title="Season 3 Add-ons Not Modeled Here">
-        Parity scaling changes rug hit rate based on the attacker's relative
-        strength, and congestion cooldown can temporarily add an extra rug cost
-        premium right after a rug expires. Use this calculator for the baseline
-        curve only.
+      <Callout type="warning" title="Chance vs Cost">
+        The relative-strength control now drives both derived outputs: matchup
+        multiplier for rug cost and parity scaler for rug chance. The
+        calculator prices cost directly, and also shows the parity hit-rate
+        scaler so you can judge whether the setup is efficient.
       </Callout>
     </>
   );
