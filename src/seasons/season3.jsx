@@ -180,10 +180,20 @@ export default function Season3({ activeSection }) {
 
           <SubTitle>Prize Pool Split</SubTitle>
           <P>
-            Season 3 divides the prize pool into two buckets. The leaderboard
-            bucket rewards final placement, while the activity bucket rewards
-            players who stay active and engaged throughout the season.
+            Season 3 divides the prize pool into two buckets: 70% goes to the
+            leaderboard bucket and 30% goes to the activity bucket. The
+            leaderboard bucket rewards final placement, while the activity
+            bucket rewards players who stay active and engaged throughout the
+            season.
           </P>
+          <div style={{ display: "flex", gap: 0, borderRadius: "12px", overflow: "hidden", marginBottom: 20, height: 48, fontSize: "14px", fontWeight: 700 }}>
+            <div style={{ flex: 7, background: "#35b0e4", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              Leaderboard 70%
+            </div>
+            <div style={{ flex: 3, background: "#DC8360", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              Activity 30%
+            </div>
+          </div>
 
           <SubTitle>Leaderboard Bucket</SubTitle>
           <P>
