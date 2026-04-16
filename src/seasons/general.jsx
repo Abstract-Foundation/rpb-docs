@@ -25,10 +25,10 @@ export default function General({ activeSection }) {
       {activeSection === "gen-what" && <>
         <SectionTitle>What is Rugpull Bakery</SectionTitle>
         <P>
-          Rugpull Bakery is a team-based competitive game on Abstract. Players form or join bakeries (teams), bake cookies, and compete on a leaderboard for ETH prize payouts. The twist: you can boost your own bakery's production or sabotage your rivals with attacks (rugs).
+          Rugpull Bakery is a competitive game on Abstract built around bakeries, cookies, and onchain actions. Depending on the season, players may compete as teams or in solo-capped bakeries, but the core loop stays the same: bake cookies, climb the leaderboard, and fight over ETH prize payouts.
         </P>
         <P>
-          Each season runs for a fixed duration (typically 7–14 days). At the end, top bakeries split the prize pool. All actions - baking, boosting, and attacking - happen on-chain with VRF-powered randomness.
+          Each season runs for a fixed duration (typically 7-14 days). At the end, prizes are allocated based on that season's published rules. All actions - baking, boosting, and attacking - happen on-chain with VRF-powered randomness.
         </P>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <StatCard label="Chain" value="Abstract" sub="L2" />
@@ -50,7 +50,7 @@ export default function General({ activeSection }) {
               ["1. Connect wallet", "Visit rugpullbakery.com and connect your Abstract Global Wallet"],
               ["2. Fund your wallet", "Bridge or transfer ETH to your AGW. You need 0.002 ETH for the buy-in plus a small amount for gas"],
               ["3. Register", "Pay the 0.002 ETH buy-in to register for the current season"],
-              ["4. Join or create a bakery", "Browse bakeries on the leaderboard or create your own. Creating a bakery is a separate action from registering"],
+              ["4. Join or create a bakery", "Depending on the season, you may join an existing bakery or create your own. Creating a bakery is a separate action from registering"],
               ["5. Start baking", "Click bake or enable auto-cooking to earn cookies for your bakery"],
             ].map(([label, desc], i) => (
               <div key={i} style={{ display: "flex", gap: 12, alignItems: "baseline" }}>
@@ -91,13 +91,13 @@ export default function General({ activeSection }) {
       {activeSection === "gen-bakeries" && <>
         <SectionTitle>Bakeries</SectionTitle>
         <P>
-          A bakery is your team for the season. Bakeries are season-scoped - a new one must be created each season. Creating a bakery and joining one are separate actions. Creating one doesn't auto-register you - you still need to pay the buy-in.
+          A bakery is your home base for the season. Bakeries are season-scoped - a new one must be created each season. Creating a bakery and joining one are separate actions. Creating one doesn't auto-register you - you still need to pay the buy-in.
         </P>
         <P>
-          Bakeries are capped at 100 members. Once a bakery is full, new players must create or join a different one. Bakeries can be set to public (anyone can join) or private (password required to join).
+          Bakery size limits and access rules can change by season. Some seasons support large shared bakeries, while others reduce bakeries to solo play. Check the current season page for the live member cap and join rules.
         </P>
         <P>
-          Private bakeries require a password before a player can join. The bakery leader can change the password at any time, and a bakery can be switched between public and private at any time.
+          Some seasons also support public and private bakeries. When privacy is enabled, a bakery password is required before another player can join.
         </P>
         <SubTitle>Leaving a Bakery</SubTitle>
         <P>
