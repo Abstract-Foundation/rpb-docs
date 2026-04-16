@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ActionCard,
   Badge,
@@ -13,11 +13,6 @@ import {
   Code,
   Changelog,
 } from "../components";
-import {
-  DEFAULT_SEASON4_SNAPSHOT,
-  fetchSeason4Snapshot,
-} from "../abstractMainnet";
-
 export const meta = {
   id: "season-3",
   number: 3,
@@ -119,6 +114,10 @@ const parityBreakpoints = [
 
 const CONGESTION_WINDOW_SECONDS = 1800;
 const CONGESTION_EXPONENT = 3;
+const DEFAULT_SEASON3_SNAPSHOT = {
+  seasonStarted: false,
+  cookiesBaked: 500000n,
+};
 
 const congestionCurve = Array.from({ length: 31 }, (_, minute) => {
   const seconds = minute * 60;
@@ -128,26 +127,6 @@ const congestionCurve = Array.from({ length: 31 }, (_, minute) => {
 });
 
 export default function Season3({ activeSection }) {
-  const [season4Snapshot, setSeason4Snapshot] = useState(
-    DEFAULT_SEASON4_SNAPSHOT,
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchSeason4Snapshot()
-      .then((snapshot) => {
-        if (!cancelled) setSeason4Snapshot(snapshot);
-      })
-      .catch(() => {
-        if (!cancelled) setSeason4Snapshot(DEFAULT_SEASON4_SNAPSHOT);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   return (
     <>
       {activeSection === "s3-overview" && (
@@ -606,8 +585,8 @@ export default function Season3({ activeSection }) {
 
       {activeSection === "s3-calculator" && (
         <CostCalculator
-          defaultCookiesBaked={season4Snapshot.cookiesBaked}
-          seasonStarted={season4Snapshot.seasonStarted}
+          defaultCookiesBaked={DEFAULT_SEASON3_SNAPSHOT.cookiesBaked}
+          seasonStarted={false}
         />
       )}
     </>
@@ -749,7 +728,7 @@ function CostCalculator({ defaultCookiesBaked, seasonStarted }) {
       <SectionTitle>Cost Calculator</SectionTitle>
       <P>
         This calculator estimates season 3 action pricing as total cookies
-        supply changes. It defaults to `500k` before season 4 starts, then
+        supply changes. It defaults to `500k` before season 3 starts, then
         switches to the live baked-cookie total from Abstract mainnet once the
         season is active.
       </P>
