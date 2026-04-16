@@ -30,6 +30,10 @@ export const meta = {
 const changelog = [
   {
     type: "changed",
+    description: "Leaderboard ranking based on total cookies baked instead of balance",
+  },
+  {
+    type: "changed",
     description: "Bakery member cap reduced to 1 (solo bakeries)",
   },
   {
