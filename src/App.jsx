@@ -3,8 +3,10 @@ import { Badge } from "./components";
 import General, { meta as generalMeta } from "./seasons/general";
 import Season1, { meta as season1Meta } from "./seasons/season1";
 import Season2, { meta as season2Meta } from "./seasons/season2";
+import Season3, { meta as season3Meta } from "./seasons/season3";
 
 const seasons = [
+  { meta: season3Meta, Component: Season3 },
   { meta: season2Meta, Component: Season2 },
   { meta: season1Meta, Component: Season1 },
 ];
