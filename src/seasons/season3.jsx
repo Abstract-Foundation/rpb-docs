@@ -398,10 +398,12 @@ export default function Season3({ activeSection }) {
             cannot stack on top of another active rug.
           </Callout>
 
-          <SubTitle>Rug Mechanics</SubTitle>
+          <SubTitle>Rug Reduction System (RRS)</SubTitle>
           <P>
-            Season 3 rugs are affected by three separate systems. Two of them
-            change cost, and one changes hit chance:
+            The <strong>Rug Reduction System (RRS)</strong> is a set of mechanics
+            that limit how effective repeated rugging can be. Season 3 rugs are
+            affected by three separate systems — two change cost, and one changes
+            hit chance:
           </P>
           <TableWrapper>
             <thead>
