@@ -11,7 +11,7 @@ export const meta = {
   number: 2,
   title: "Season 2",
   subtitle: "Balance-based scoring, matchup multipliers, and a trimmed action catalog",
-  status: "active",
+  status: "ended",
   sections: [
     { id: "s2-overview", title: "Overview", icon: "🍪" },
     { id: "s2-scoring", title: "Scoring & Actions", icon: "🏆" },

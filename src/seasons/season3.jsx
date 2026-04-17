@@ -18,7 +18,7 @@ export const meta = {
   number: 3,
   title: "Season 3",
   subtitle: "Solo bakeries, split payouts, and tighter rugging rules",
-  status: "upcoming",
+  status: "active",
   sections: [
     { id: "s3-overview", title: "Overview", icon: "🍪" },
     { id: "s3-payouts", title: "Payouts & Scoring", icon: "🏆" },
